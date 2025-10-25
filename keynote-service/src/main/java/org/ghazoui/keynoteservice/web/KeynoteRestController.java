@@ -2,6 +2,7 @@ package org.ghazoui.keynoteservice.web;
 
 import org.ghazoui.keynoteservice.dtos.KeynoteDTO;
 import org.ghazoui.keynoteservice.services.KeynoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @RestController
 public class KeynoteRestController {
 
+    @Autowired
     private KeynoteService keynoteService;
 
     @GetMapping("/keynotes")

@@ -1,8 +1,7 @@
 package org.ghazoui.conferenceservice.services;
 
 import org.ghazoui.conferenceservice.dtos.ConferenceDTO;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
