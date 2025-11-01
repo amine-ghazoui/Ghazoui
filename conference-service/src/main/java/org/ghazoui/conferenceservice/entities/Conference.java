@@ -1,12 +1,12 @@
 package org.ghazoui.conferenceservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.ghazoui.conferenceservice.model.Keynote;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,4 +21,11 @@ public class Conference {
     private Integer duree;
     private Integer nombreInscrits;
     private Double score;
+    private Long keynoteId;
+
+    @OneToMany(mappedBy = "conference")
+    List<Review> reviews = new ArrayList<>();
+
+    @Transient
+    Keynote keynote;
 }

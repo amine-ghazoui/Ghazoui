@@ -65,4 +65,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     public void deleteConference(Long id) {
         conferenceRepository.deleteById(id);
     }
+
+
+
 }
