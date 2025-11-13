@@ -6,7 +6,7 @@ pipeline {
         FRONTEND_DIR = "frontend"
         DEPLOY_DIR = "C:/jenkins-deploy"
         JAVA_HOME = "C:/Program Files/Java/jdk-21" // adapte selon ton système
-        PATH = "${env.JAVA_HOME}/bin;${env.PATH}"
+        PATH = "${env.JAVA_HOME}/bin;${env.PATH}" // adapte selon ton systeme
     }
 
     stages {
