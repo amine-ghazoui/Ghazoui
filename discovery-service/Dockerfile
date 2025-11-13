@@ -1,4 +1,6 @@
 FROM eclipse-temurin:21-jdk-alpine
+VOLUME /tmp
+RUN apk add --no-cache curl
 WORKDIR /app
 COPY target/*.jar app.jar
 EXPOSE 8761

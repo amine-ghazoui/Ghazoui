@@ -1,103 +1,157 @@
-version: '3.9'
-
 services:
-  # 🗂️ Config Service
-  config-service:
-    build: ./config-service
-    container_name: config-service
-    ports:
-      - "9999:9999"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    volumes:
-      - ./repo-config:/app/config-repo
-    networks:
-      - microservices-net
-
-  # 🔍 Discovery Service (Eureka)
   discovery-service:
     build: ./discovery-service
     container_name: discovery-service
     ports:
       - "8761:8761"
-    depends_on:
-      - config-service
-    networks:
-      - microservices-net
+    expose:   # pour pouvoir acceder au port 8761 depuis l'exterieur
+      - "8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 4
 
-  # 🧱 Gateway Service
-  gateway-service:
-    build: ./gateway-service
-    container_name: gateway-service
+  config-service:
+    build: ./config-service
+    container_name: config-service
     ports:
-      - "8888:8888"
-    depends_on:
-      - discovery-service
-      - keycloak
-      - config-service
+      - "9999:9999"
+    expose:   # pour pouvoir acceder au port 9999 depuis l'exterieur
+      - "9999"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - microservices-net
-
-  # 🎓 Conference Service
-  conference-service:
-    build: ./conference-service
-    container_name: conference-service
-    ports:
-      - "8081:8081"
+      - DISCOVERY_SERVICE_URL=http://discovery-service:8761/eureka
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 4
     depends_on:
-      - discovery-service
-      - config-service
-      - keynote-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - microservices-net
+      discovery-service:
+        condition: service_healthy
 
-  # 🗣️ Keynote Service
   keynote-service:
     build: ./keynote-service
     container_name: keynote-service
     ports:
       - "8082:8082"
-    depends_on:
-      - discovery-service
-      - config-service
+    expose:
+      - "8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - microservices-net
-
-  # 🛡️ Keycloak
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.2
-    container_name: keycloak
-    command:
-      - start-dev
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_HTTP_PORT=8180
-      - KC_HOSTNAME=localhost
-    ports:
-      - "8180:8180"
-    volumes:
-      - ./keycloak-data:/opt/keycloak/data
-    networks:
-      - microservices-net
-
-  # 🌐 Frontend Angular
-  frontend-angular:
-    build: ./frontend
-    container_name: frontend-angular
-    ports:
-      - "4200:80"
+      - DISCOVERY_SERVICE_URL=http://discovery-service:8761/eureka
+      - CONFIG_SERVICE_URL=http://config-service:9999
     depends_on:
-      - gateway-service
-    networks:
-      - microservices-net
+      config-service:
+        condition: service_healthy
 
-networks:
-  microservices-net:
-    driver: bridge
+
+
+
+
+
+
+#version: '3.9'
+#
+#services:
+#  # 🗂️ Config Service
+#  config-service:
+#    build: ./config-service
+#    container_name: config-service
+#    ports:
+#      - "9999:9999"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    volumes:
+#      - ./repo-config:/app/config-repo
+#    networks:
+#      - microservices-net
+#
+#  # 🔍 Discovery Service (Eureka)
+#  discovery-service:
+#    build: ./discovery-service
+#    container_name: discovery-service
+#    ports:
+#      - "8761:8761"
+#    depends_on:
+#      - config-service
+#    networks:
+#      - microservices-net
+#
+#  # 🧱 Gateway Service
+#  gateway-service:
+#    build: ./gateway-service
+#    container_name: gateway-service
+#    ports:
+#      - "8888:8888"
+#    depends_on:
+#      - discovery-service
+#      - keycloak
+#      - config-service
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - microservices-net
+#
+#  # 🎓 Conference Service
+#  conference-service:
+#    build: ./conference-service
+#    container_name: conference-service
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - discovery-service
+#      - config-service
+#      - keynote-service
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - microservices-net
+#
+#  # 🗣️ Keynote Service
+#  keynote-service:
+#    build: ./keynote-service
+#    container_name: keynote-service
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      - discovery-service
+#      - config-service
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    networks:
+#      - microservices-net
+#
+#  # 🛡️ Keycloak
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:24.0.2
+#    container_name: keycloak
+#    command:
+#      - start-dev
+#    environment:
+#      - KEYCLOAK_ADMIN=admin
+#      - KEYCLOAK_ADMIN_PASSWORD=admin
+#      - KC_HTTP_PORT=8180
+#      - KC_HOSTNAME=localhost
+#    ports:
+#      - "8180:8180"
+#    volumes:
+#      - ./keycloak-data:/opt/keycloak/data
+#    networks:
+#      - microservices-net
+#
+#  # 🌐 Frontend Angular
+#  frontend-angular:
+#    build: ./frontend
+#    container_name: frontend-angular
+#    ports:
+#      - "4200:80"
+#    depends_on:
+#      - gateway-service
+#    networks:
+#      - microservices-net
+#
+#networks:
+#  microservices-net:
+#    driver: bridge
+#
+
