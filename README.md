@@ -53,7 +53,7 @@ Ghazoui/
 ## 🚀 Technologies Utilisées
 
 ### Backend
-- **Spring Boot ** - Framework principal
+- **Spring Boot 3 ** - Framework principal
 - **Spring Cloud Gateway** - API Gateway
 - **Eureka Server** - Service Discovery
 - **Spring Cloud Config** - Configuration centralisée
@@ -64,7 +64,7 @@ Ghazoui/
 - **OpenAPI (Swagger)** - Documentation API
 
 ### Frontend
-- **Angular 17+** - Framework frontend
+- **Angular 19** - Framework frontend
 - **TypeScript** - Langage de développement
 - **Bootstrap/Tailwind** - Framework CSS
 
