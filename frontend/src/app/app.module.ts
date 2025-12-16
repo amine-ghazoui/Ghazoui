@@ -41,7 +41,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule, 
+    HttpClientModule,
     FormsModule,
     KeycloakAngularModule
   ],
@@ -54,6 +54,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     }
   ],
   bootstrap: [AppComponent]
-  
+
 })
 export class AppModule { }
